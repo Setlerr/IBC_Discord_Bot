@@ -1,7 +1,6 @@
 import discord
 import os 
 
-
 from discord.ext import tasks, commands
 from discord.utils import get
 
@@ -19,15 +18,6 @@ client = commands.Bot(command_prefix='.', intents=intents) #define prefix
 @client.command() #define commands
 async def hello(ctx):
     await ctx.send("Hello, I'm still working!")
-
-@client.command()
-async def hello1(ctx):
-    await ctx.send("Hello, I'm still working1!")
-
-@client.command()
-async def hello2(ctx):
-    await ctx.send("Hello, I'm still working2!")
-
 
 @client.event
 async def on_member_join(member):
@@ -61,11 +51,10 @@ async def leave(ctx):
 async def on_message(message):
     if message.author == client.user:
         return
-    
     channel = client.get_channel(982746762303402014) #channel id where message will be sent    
-    await channel.send(message.content)
-    await channel.send("#"+message.channel)
-    print(message.content)
+    mess = "#" + str(message.channel) + " " + str(message.author) + " at " + str(message.created_at)[0:19] + "\n" + str(message.content)
+    await channel.send(mess)
+    print(mess)
 
 
 
