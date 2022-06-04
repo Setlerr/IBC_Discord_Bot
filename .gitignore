@@ -1,2 +1,5 @@
 
 apikeys.py
+*.pyc
+*~
+*.swp
