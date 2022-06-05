@@ -1,6 +1,7 @@
 from email import message
 import nextcord
 import os 
+import asyncio
 
 from nextcord.ext import tasks, commands
 from nextcord.utils import get
@@ -57,8 +58,15 @@ async def re(ctx):
 
 
 #check for word learning
+@client.command()
+async def edit(ctx, *, word: str):
+    channel = client.get_channel(ctx.channel)
+    messages = await ctx.channel.history(limit=200).flatten()
 
-
+    for msg in messages:
+        if "Event" in msg.content:
+            print(msg.jump_url)
+#TODO MAKE IT PRETTIER
 @client.event
 async def on_message(message):
     if message.author == client.user:
@@ -74,21 +82,46 @@ async def on_message(message):
     if mess.find(".re ") > -1:
         print("register")                   #debug
         role = mess[3:]
-        await message.delete()
-        await message.channel.send(role)
+        if role.find("slot") == -1:
+            await message.channel.send("Nie ma takiej roli")
+            await asyncio.sleep(3)
+            await message.delete()
+            await message.channel.delete()
+        elif role.find("slot") > -1:
+            await message.delete()
+            messages = await message.channel.history(limit=200).flatten()
+            for event in messages:
+                if "Event" in event.content:
+                    mess = event.content
+                    print(mess)
+                    mess = mess.replace(role,(" @"+str(message.author)))
+                    await event.edit(content=mess)
+    #if mess.find(".rm ") > -1:
+    #    print("register")                   #debug
+    #    role = mess[3:]
+    #    if role.find("slot") == -1:
+    #        await asyncio.sleep(3)
+    #        await message.channel.send("Nie ma takiej roli")
+    #        await message.delete()
+    #    await message.delete()
+    #    messages = await message.channel.history(limit=200).flatten()
+    #    for event in messages:
+    #        if "Event" in event.content:
+    #            mess = event.content
+    #            mess.replace(role,str(message.author))
+    #            await event.edit(content=mess)
     elif mess.find(".create ") > -1:
         print("Create")                     #Create
         text = "Event\n" + mess[8:]
         await message.delete()
         await message.channel.send(text)
-        #event_id = message.id
-        #print(event_id)
-    elif mess.find(".edit ") > -1:                  #TODO: trying to get last message sent by bot to get event message to edit this
-        print("Edit")                     #Edit
-        async for message in channel.history(limit=200).flatten():
-            if message.author == client:
-                event = message.content
-        await message.channel.send(event)
-
+    elif mess.find(".edit ") > -1:                
+        print("Edit")
+        text = mess[5:]
+        await message.delete()                     #Edit
+        messages = await message.channel.history(limit=200).flatten()
+        for event in messages:
+            if "Event" in event.content:
+                await event.edit(content="Event\n"+ text + "\n Edited by: " + str(message.author))
 
 client.run(TOKEN)
