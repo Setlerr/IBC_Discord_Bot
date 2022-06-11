@@ -2,6 +2,7 @@ from email import message
 import nextcord
 import os 
 import asyncio
+import time
 
 from nextcord.ext import tasks, commands
 from nextcord.utils import get
@@ -17,6 +18,7 @@ intents.members = True
 intents.messages = True
 
 client = commands.Bot(command_prefix='.', intents=intents) #define prefix
+
 
 @client.event
 async def on_ready():
@@ -36,92 +38,77 @@ async def on_member_remove(member):
     channel = client.get_channel(join_leave_channel)
     await channel.send(f"Uciekł {member}")
 
-@client.command(pass_context=True)
-async def join(ctx):
-    if(ctx.author.voice):
-        channel = ctx.message.author.voice.channel
-        await channel.connect()
-    else:
-        await ctx.send("Wejdź na kanał głosowy!")
-
-#guild is basiclly your server so, go to guild > voice channel > leave
-#Learning how joining works
-@client.command(pass_context = True)
-async def leave(ctx):
-    if (ctx.voice_client):
-        await ctx.guild.voice_client.disconnect()#End of this
-
-@client.command(pass_context = True)
-async def re(ctx):
-    if (ctx.voice_client):
-        await ctx.guild.voice_client.disconnect()#End of this
-
-
-#check for word learning
+#edit event by creator
 @client.command()
-async def edit(ctx, *, word: str):
-    channel = client.get_channel(ctx.channel)
+async def edit(ctx, *, word: str): #edit
+    print("edit")
     messages = await ctx.channel.history(limit=200).flatten()
+    for event in messages:
+            if "Event" in event.content:
+                #await ctx.delete()
+                text = event.content
+                check_position = text.find("Created by: ")
+                check_text = text[check_position:]
+                if check_text.find(str(ctx.author.mention)) > -1:
+                    await event.edit(content="Event\n"+ word + "\nCreated by: " + str(ctx.author.mention))
+                else:
+                    await ctx.channel.send("Nie możesz edytować tej wiadomości!")
 
-    for msg in messages:
-        if "Event" in msg.content:
-            print(msg.jump_url)
-#TODO MAKE IT PRETTIER
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-    #print(message)
-    channel = client.get_channel(logs_channel) #channel id where message will be sent  
-    #all messege logs
-    mess = "#" + str(message.channel) + " " + str(message.author) + " at " + str(message.created_at)[0:19] + "\n" + str(message.content)
-    await channel.send(mess)
-    #print(mess)
-    #trying to take string after .re command
-    mess = str(message.content)
-    if mess.find(".re ") > -1:
-        print("register")                   #debug
-        role = mess[3:]
-        if role.find("slot") == -1:
-            await message.channel.send("Nie ma takiej roli")
-            await asyncio.sleep(3)
-            await message.delete()
-            await message.channel.delete()
-        elif role.find("slot") > -1:
-            await message.delete()
-            messages = await message.channel.history(limit=200).flatten()
-            for event in messages:
-                if "Event" in event.content:
-                    mess = event.content
-                    print(mess)
-                    mess = mess.replace(role,(" @"+str(message.author)))
-                    await event.edit(content=mess)
-    #if mess.find(".rm ") > -1:
-    #    print("register")                   #debug
-    #    role = mess[3:]
-    #    if role.find("slot") == -1:
-    #        await asyncio.sleep(3)
-    #        await message.channel.send("Nie ma takiej roli")
-    #        await message.delete()
-    #    await message.delete()
-    #    messages = await message.channel.history(limit=200).flatten()
-    #    for event in messages:
-    #        if "Event" in event.content:
-    #            mess = event.content
-    #            mess.replace(role,str(message.author))
-    #            await event.edit(content=mess)
-    elif mess.find(".create ") > -1:
-        print("Create")                     #Create
-        text = "Event\n" + mess[8:]
-        await message.delete()
-        await message.channel.send(text)
-    elif mess.find(".edit ") > -1:                
-        print("Edit")
-        text = mess[5:]
-        await message.delete()                     #Edit
-        messages = await message.channel.history(limit=200).flatten()
+#register
+@client.command()
+async def re(ctx, arg: str): 
+    if arg.find("slot") == -1:
+        await ctx.channel.send("Nie ma takiej roli")
+        await asyncio.sleep(3)
+        #await ctx.delete()
+        #await ctx.delete()
+    elif arg.find("slot") > -1:
+        #await ctx.delete()
+        messages = await ctx.channel.history(limit=200).flatten()
         for event in messages:
             if "Event" in event.content:
-                await event.edit(content="Event\n"+ text + "\n Edited by: " + str(message.author))
+                mess = event.content
+                print(mess)
+                mess = mess.replace(arg,(" "+str(ctx.author.mention)))
+                await event.edit(content=mess)
+
+#create
+@client.command()
+async def create(ctx, *, word: str):
+    print("create")
+    #await ctx.delete()
+    await ctx.send(content="Event\n"+ word + "\nCreated by: " + str(ctx.author.mention))
+
+
+#remove
+@client.command()
+async def rm(ctx,*,word: str):
+        print("remove")                   
+        #await ctx.delete()
+        messages = await ctx.channel.history(limit=200).flatten()
+        for event in messages:
+            if "Event" in event.content:
+                check_slot = event.content
+                if word.find("slot") == -1:
+                    #await ctx.delete()
+                    await ctx.channel.send("Musisz nazwać slota z którego chcesz się wypisać np. slot5")
+                    await asyncio.sleep(6)
+                    #await ctx.delete()
+                    break
+                elif check_slot.find(word)>-1:
+                    #await ctx.delete()
+                    await ctx.channel.send("Taki slot już istnieje")
+                    await asyncio.sleep(6)
+                    #await ctx.delete()
+                    break
+                elif word.find("slot")>-1:
+                    text = event.content
+                    check_position = text.find("Created by: ")
+                    check_text = text[check_position:]
+                    text = text[:check_position]
+                    text = text.replace(str(ctx.author.mention),word)
+                    await event.edit(content=text+check_text)
+
+                    
 
 client.run(TOKEN)
