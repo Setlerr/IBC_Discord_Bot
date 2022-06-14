@@ -72,9 +72,14 @@ async def re(ctx, arg: str):
             for event in messages:
                 if "Event" in event.content:
                     mess = event.content
-                    print(mess)
-                    mess = mess.replace(arg,(" "+str(ctx.author.mention)),1)
-                    await event.edit(content=mess)
+                    check_position = mess.find("Created by: ")
+                    check_text = mess[:check_position]
+                    print(check_text)
+                    if check_text.find(str(ctx.author.mention))>-1:
+                        await ctx.channel.send("Już jesteś zapisany!",delete_after=5)
+                    else:
+                        mess = mess.replace(arg,(str(ctx.author.mention)),1)
+                        await event.edit(content=mess)
         else:
             await ctx.message.delete()
             await ctx.channel.send("Podaj numer slota",delete_after=5)
@@ -103,20 +108,22 @@ async def rm(ctx,*,word: str):
         for event in messages:
             if "Event" in event.content:
                 check_slot = event.content
-                if word.find("slot") == -1:
-                    
+                if word.find("slot") == -1:               
                     await ctx.channel.send("Musisz nazwać slota z którego chcesz się wypisać np. slot5",delete_after=5)
                     break
                 elif check_slot.find(word)>-1:
                     await ctx.channel.send("Taki slot już istnieje",delete_after=5)
                     break
                 elif word.find("slot")>-1:
-                    text = event.content
-                    check_position = text.find("Created by: ")
-                    check_text = text[check_position:]
-                    text = text[:check_position]
-                    text = text.replace(str(ctx.author.mention),word,1)
-                    await event.edit(content=text+check_text)
+                    if word.find(" ")>-1:
+                        await ctx.channel.send("Bez spacji!",delete_after=5)
+                    else:
+                        text = event.content
+                        check_position = text.find("Created by: ")
+                        check_text = text[check_position:]
+                        text = text[:check_position]
+                        text = text.replace(str(ctx.author.mention),word,1)
+                        await event.edit(content=text+check_text)
         await ctx.message.delete()
 
 client.run(TOKEN)
