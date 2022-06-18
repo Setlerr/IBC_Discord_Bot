@@ -111,7 +111,7 @@ async def rm(ctx,*,word: str):
                 if word.find("slot") == -1:               
                     await ctx.channel.send("Musisz nazwać slota z którego chcesz się wypisać np. slot5",delete_after=5)
                     break
-                elif check_slot.find(word)>-1:
+                elif check_slot.find(word+" ")>-1:
                     await ctx.channel.send("Taki slot już istnieje",delete_after=5)
                     break
                 elif word.find("slot")>-1:
