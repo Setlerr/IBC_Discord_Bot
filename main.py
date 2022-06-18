@@ -1,9 +1,6 @@
 from email import message
 import numbers
 import nextcord
-import os 
-import asyncio
-import time
 import linecache as lc
 
 from nextcord.ext import tasks, commands
@@ -126,4 +123,4 @@ async def rm(ctx,*,word: str):
                         await event.edit(content=text+check_text)
         await ctx.message.delete()
 
-client.run(TOKEN)
+client.run(TOKEN_FINAL)
