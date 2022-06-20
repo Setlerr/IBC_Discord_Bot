@@ -123,4 +123,14 @@ async def rm(ctx,*,word: str):
                         await event.edit(content=text+check_text)
         await ctx.message.delete()
 
-client.run(TOKEN_FINAL)
+#template - creates a template for x players
+@client.command()
+async def template(ctx,amount: int):
+    mess = "**Zapisy**\n"
+    for number in range(amount):
+        mess += f"{number+1}. slot{number+1} -\n"
+    await ctx.author.send(mess)
+    await ctx.message.delete()
+
+
+client.run(TOKEN)
