@@ -132,5 +132,36 @@ async def template(ctx,amount: int):
     await ctx.author.send(mess)
     await ctx.message.delete()
 
+#all messege logs
+@client.event
+async def on_message_delete(message):
+    print("deleted")
+    embed = nextcord.Embed(title=f"{message.author.name} usunął wiadomość z kanału {message.channel}",description=f"{message.content}")
+    channel = client.get_channel(logs_channel)
+    await channel.send(embed=embed)
+
+@client.event
+async def on_message_edit(message_before,message_after):
+    embed_message = nextcord.Embed(title=f"{message_before.author.name} edytował wiadomość na kanale {message_before.channel}")
+    embed_message.add_field(name="Przed",value=f"{message_before.content}",inline=False)
+    embed_message.add_field(name="Po",value=f"{message_after.content}",inline=False)
+    channel = client.get_channel(logs_channel)
+    await channel.send(embed=embed_message)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 client.run(TOKEN)
