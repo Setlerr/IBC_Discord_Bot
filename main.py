@@ -1,25 +1,28 @@
 from email import message
 import numbers
 import nextcord
+import os
 import linecache as lc
 
 from nextcord.ext import tasks, commands
 from nextcord.utils import get
 from datetime import datetime
 from time import gmtime, strftime
+from array import array
 
 #import token from file
-from apikeys import *
-from settings import *
-
+from apikeys import TOKEN
+from settings import logs_channel, join_leave_channel
 intents = nextcord.Intents.all()
 intents.members = True
 intents.messages = True
 
+def save_event(**event):
+    print(event)
+
 client = commands.Bot(command_prefix='.', intents=intents) #define prefix
 
-def has_numbers(inputString):
-    return any(char.isdigit() for char in inputString)
+
 
 @client.event
 async def on_ready():
@@ -38,101 +41,18 @@ async def on_member_join(member):
 async def on_member_remove(member):
     channel = client.get_channel(join_leave_channel)
     await channel.send(f"Uciekł {member}")
+############################################
+#Learning Cogs
+extensions = []
+for filename in os.listdir('./cogs'):
+    if filename.endswith('.py'):
+        extensions.append("cogs." + filename[:-3])#to delete .py
 
-#edit event by creator
-@client.command(pass_context=True)
-async def edit(ctx, *, word: str): #edit
-    print("edit")
-    messages = await ctx.channel.history(limit=200).flatten()
-    for event in messages:
-            if "Event" in event.content:
-                await ctx.message.delete()
-                text = event.content
-                check_position = text.find("Created by: ")
-                check_text = text[check_position:]
-                if check_text.find(str(ctx.author.mention)) > -1:
-                    await event.edit(content="Event\n"+ word + "\nCreated by: " + str(ctx.author.mention))
-                else:
-                    await ctx.channel.send("Nie możesz edytować tej wiadomości!",delete_after=5)
+if __name__== '__main__':
+    for extension in extensions:
+        client.load_extension(extension)
 
-
-#register
-@client.command()
-async def re(ctx, arg: str): 
-    if arg.find("slot") == -1:
-        await ctx.message.delete()
-        await ctx.channel.send("Nie ma takiej roli",delete_after=5)
-    elif arg.find("slot") > -1:
-        if has_numbers(arg)==True:
-            await ctx.message.delete()
-            messages = await ctx.channel.history(limit=200).flatten()
-            for event in messages:
-                if "Event" in event.content:
-                    mess = event.content
-                    check_position = mess.find("Created by: ")
-                    check_text = mess[:check_position]
-                    print(check_text)
-                    if check_text.find(str(ctx.author.mention))>-1:
-                        await ctx.channel.send("Już jesteś zapisany!",delete_after=5)
-                    else:
-                        mess = mess.replace(arg,(str(ctx.author.mention)),1)
-                        await event.edit(content=mess)
-        else:
-            await ctx.message.delete()
-            await ctx.channel.send("Podaj numer slota",delete_after=5)
-#create
-@client.command()
-async def create(ctx, *, word: str):
-    marker = 0
-    print("create")
-    messages = await ctx.channel.history(limit=200).flatten()
-    await ctx.message.delete()
-    for event in messages:
-        if event.content.find("Event")>-1:
-            print("1")
-            marker = 1
-            await ctx.channel.send("Już jest wydarzenie na tym kanale.",delete_after=5)
-            break
-    if marker==0:
-        await ctx.send(content="Event\n"+ word + "\nCreated by: " + str(ctx.author.mention))
-    
-
-#remove
-@client.command()
-async def rm(ctx,*,word: str):
-        print("remove")                   
-        messages = await ctx.channel.history(limit=200).flatten()
-        for event in messages:
-            if "Event" in event.content:
-                check_slot = event.content
-                if word.find("slot") == -1:               
-                    await ctx.channel.send("Musisz nazwać slota z którego chcesz się wypisać np. slot5",delete_after=5)
-                    break
-                elif check_slot.find(word+" ")>-1:
-                    await ctx.channel.send("Taki slot już istnieje",delete_after=5)
-                    break
-                elif word.find("slot")>-1:
-                    if word.find(" ")>-1:
-                        await ctx.channel.send("Bez spacji!",delete_after=5)
-                    else:
-                        text = event.content
-                        check_position = text.find("Created by: ")
-                        check_text = text[check_position:]
-                        text = text[:check_position]
-                        text = text.replace(str(ctx.author.mention),word,1)
-                        await event.edit(content=text+check_text)
-        await ctx.message.delete()
-
-#template - creates a template for x players
-@client.command()
-async def template(ctx,amount: int):
-    mess = "**Zapisy**\n"
-    for number in range(amount):
-        mess += f"{number+1}. slot{number+1} -\n"
-    await ctx.author.send(mess)
-    await ctx.message.delete()
-
-#all messege logs
+#edit/delete messages logs
 @client.event
 async def on_message_delete(message):
     print("deleted")
@@ -147,21 +67,6 @@ async def on_message_edit(message_before,message_after):
     embed_message.add_field(name="Po",value=f"{message_after.content}",inline=False)
     channel = client.get_channel(logs_channel)
     await channel.send(embed=embed_message)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 client.run(TOKEN)
