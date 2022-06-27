@@ -19,21 +19,18 @@ class Reminder(commands.Cog):
     
     def __init__(self,client):
         self.client=client
-#reminder
+#remind
     @commands.Cog.listener()
-    async def re(self, member): 
-        #code
+    async def re(self, ctx):
+        await ctx.channe.send("remind")#to delete  
 
-
-
-
-
-
-
-
-        #end of code
 def setup(client):
     client.add_cog(Reminder(client))
 
 
 
+
+
+
+
+# @client.command()

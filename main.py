@@ -41,6 +41,9 @@ async def on_member_join(member):
 async def on_member_remove(member):
     channel = client.get_channel(join_leave_channel)
     await channel.send(f"Uciekł {member}")
+
+
+
 ############################################
 #Learning Cogs
 extensions = []
@@ -51,6 +54,24 @@ for filename in os.listdir('./cogs'):
 if __name__== '__main__':
     for extension in extensions:
         client.load_extension(extension)
+
+
+@client.command()
+async def reload(ctx):
+    extensions = []
+    for filename in os.listdir('./cogs'):
+        if filename.endswith('.py'):
+            extensions.append("cogs." + filename[:-3])#to delete .py
+
+    if __name__== '__main__':
+        for extension in extensions:
+            client.reload_extension(extension)
+    await ctx.send("Reloaded")
+
+
+
+
+
 
 #edit/delete messages logs
 @client.event
