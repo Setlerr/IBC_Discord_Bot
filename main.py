@@ -17,6 +17,7 @@ intents = nextcord.Intents.all()
 intents.members = True
 intents.messages = True
 
+
 def save_event(**event):
     print(event)
 
@@ -51,17 +52,22 @@ async def reload(ctx):
     for filename in os.listdir('./cogs'):
         if filename.endswith('.py'):
             extensions.append("cogs." + filename[:-3])#to delete .py
-
     if __name__== '__main__':
         for extension in extensions:
-            client.reload_extension(extension)
+            client.unload_extension(extension)
+    if __name__== '__main__':
+        for extension in extensions:
+            client.load_extension(extension)
             await ctx.send(f'{extension} reloaded',delete_after=5)
 
 
 @client.event
 async def on_message_delete(message):
+    async for entry in message.guild.audit_logs(limit=1,action=nextcord.AuditLogAction.message_delete):
+        deleter = entry.user
+    print(f"{deleter.name} deleted message by {message.author.name}")
     print("deleted")
-    embed = nextcord.Embed(title=f"{message.author.name} usunął wiadomość z kanału {message.channel}",description=f"{message.content}")
+    embed = nextcord.Embed(title=f"{deleter.name} usunął wiadomość {message.author.name} z kanału {message.channel}",description=f"{message.content}")
     channel = client.get_channel(logs_channel)
     await channel.send(embed=embed)
 
