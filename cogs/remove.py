@@ -18,7 +18,7 @@ class Remove(commands.Cog):
     def __init__(self,client):
         self.client=client
 #remove
-    @commands.command()
+    @commands.command(name='rm',aliases=['wypis','remove'])
     async def rm(self, ctx,*,word: str):
         print("remove")                   
         messages = await ctx.channel.history(limit=200).flatten()

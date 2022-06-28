@@ -32,18 +32,6 @@ async def on_ready():
 async def hello(ctx):
     await ctx.send("Hello, I'm still working!")
 
-@client.event
-async def on_member_join(member):
-    channel = client.get_channel(join_leave_channel) #channel id where message will be sent
-    await channel.send(f"Witaj {member}")    
-
-@client.event
-async def on_member_remove(member):
-    channel = client.get_channel(join_leave_channel)
-    await channel.send(f"Uciekł {member}")
-
-
-
 ############################################
 #Learning Cogs
 extensions = []
@@ -58,6 +46,7 @@ if __name__== '__main__':
 
 @client.command()
 async def reload(ctx):
+    await ctx.message.delete()
     extensions = []
     for filename in os.listdir('./cogs'):
         if filename.endswith('.py'):
@@ -66,14 +55,9 @@ async def reload(ctx):
     if __name__== '__main__':
         for extension in extensions:
             client.reload_extension(extension)
-    await ctx.send("Reloaded")
+            await ctx.send(f'{extension} reloaded',delete_after=5)
 
 
-
-
-
-
-#edit/delete messages logs
 @client.event
 async def on_message_delete(message):
     print("deleted")
@@ -88,6 +72,5 @@ async def on_message_edit(message_before,message_after):
     embed_message.add_field(name="Po",value=f"{message_after.content}",inline=False)
     channel = client.get_channel(logs_channel)
     await channel.send(embed=embed_message)
-
 
 client.run(TOKEN)

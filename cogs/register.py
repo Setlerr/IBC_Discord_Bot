@@ -20,7 +20,7 @@ class Register(commands.Cog):
     def __init__(self,client):
         self.client=client
 #register
-    @commands.command()
+    @commands.command(name='re',aliases=['zapis','register','zapisz'])
     async def re(self, ctx, arg: str): 
         if arg.find("slot") == -1:
             await ctx.message.delete()
@@ -47,11 +47,3 @@ class Register(commands.Cog):
 
 def setup(client):
     client.add_cog(Register(client))
-
-
-
-
-
-
-
-# @client.command()
