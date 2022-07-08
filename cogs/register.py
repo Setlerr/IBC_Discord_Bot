@@ -38,7 +38,7 @@ class Register(commands.Cog):
                         if check_text.find(str(ctx.author.name))>-1:
                             await ctx.channel.send("Już jesteś zapisany!",delete_after=5)
                         else:
-                            mess = mess.replace(arg,(str(ctx.author.name)),1)
+                            mess = mess.replace(arg,("**"+str(ctx.author.name)+"**"),1)
                             await event.edit(content=mess)
             else:
                 await ctx.message.delete()

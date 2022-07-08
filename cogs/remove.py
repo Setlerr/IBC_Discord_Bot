@@ -33,7 +33,7 @@ class Remove(commands.Cog):
                         check_text = text[check_position:]
                         text = text[:check_position]
                         text = text.replace(str(ctx.author.mention),word,1) #this line is temporary
-                        text = text.replace(str(ctx.author.name),word,1)
+                        text = text.replace("**"+str(ctx.author.name)+"**",word,1)
                         await event.edit(content=text+check_text)
         await ctx.message.delete()
 
