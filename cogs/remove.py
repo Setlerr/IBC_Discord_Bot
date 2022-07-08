@@ -1,13 +1,6 @@
-from email import message
-import numbers
 import nextcord
-import linecache as lc
 
-from nextcord.ext import tasks, commands
-from nextcord.utils import get
-from datetime import datetime
-from time import gmtime, strftime
-from array import array
+from nextcord.ext import commands
 
 intents = nextcord.Intents.all()
 intents.members = True
@@ -39,7 +32,7 @@ class Remove(commands.Cog):
                         check_position = text.find("Created by: ")
                         check_text = text[check_position:]
                         text = text[:check_position]
-                        text = text.replace(str(ctx.author.mention),word,1)
+                        text = text.replace(str(ctx.author.name),word,1)
                         await event.edit(content=text+check_text)
         await ctx.message.delete()
 

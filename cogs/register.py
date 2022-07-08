@@ -35,10 +35,10 @@ class Register(commands.Cog):
                         check_position = mess.find("Created by: ")
                         check_text = mess[:check_position]
                         print(check_text)
-                        if check_text.find(str(ctx.author.mention))>-1:
+                        if check_text.find(str(ctx.author.name))>-1:
                             await ctx.channel.send("Już jesteś zapisany!",delete_after=5)
                         else:
-                            mess = mess.replace(arg,(str(ctx.author.mention)),1)
+                            mess = mess.replace(arg,(str(ctx.author.name)),1)
                             await event.edit(content=mess)
             else:
                 await ctx.message.delete()
