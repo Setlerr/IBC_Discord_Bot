@@ -44,6 +44,6 @@ class Register(commands.Cog):
                 await ctx.message.delete()
                 await ctx.channel.send("Podaj numer slota",delete_after=5)
 
-
 def setup(client):
     client.add_cog(Register(client))
+

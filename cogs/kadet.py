@@ -15,11 +15,8 @@ class Kadet(commands.Cog):
     @commands.has_role("HR")
     async def kadet(self, ctx, user : nextcord.Member):
         await ctx.message.delete()
-        role1 = ctx.guild.get_role(865191541940027452)
-        role2 = ctx.guild.get_role(933040601073582140)
-        role3 = ctx.guild.get_role(944364213692944404)
-        await user.add_roles(role1)
-        await user.add_roles(role2)
-        await user.add_roles(role3)
+        role1 = ctx.guild.get_role(1001216779177181314)
+        role2 = ctx.guild.get_role(1001232354523746364)
+        await user.add_roles(role1,role2)
 def setup(client):
     client.add_cog(Kadet(client))

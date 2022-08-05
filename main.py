@@ -1,18 +1,11 @@
-from email import message
-import numbers
 import nextcord
 import os
-import linecache as lc
 
-from nextcord.ext import tasks, commands
-from nextcord.utils import get
-from datetime import datetime
-from time import gmtime, strftime
-from array import array
+from nextcord.ext import commands
 
 #import token from file
 from apikeys import TOKEN
-from settings import logs_channel, join_leave_channel
+from settings import logs_channel
 intents = nextcord.Intents.all()
 intents.members = True
 intents.messages = True
@@ -22,8 +15,6 @@ def save_event(**event):
     print(event)
 
 client = commands.Bot(command_prefix='.', intents=intents) #define prefix
-
-
 
 @client.event
 async def on_ready():
