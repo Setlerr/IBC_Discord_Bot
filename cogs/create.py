@@ -1,13 +1,6 @@
-from email import message
-import numbers
 import nextcord
-import linecache as lc
 
-from nextcord.ext import tasks, commands
-from nextcord.utils import get
-from datetime import datetime
-from time import gmtime, strftime
-from array import array
+from nextcord.ext import commands
 
 intents = nextcord.Intents.all()
 intents.members = True

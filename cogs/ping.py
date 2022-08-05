@@ -1,8 +1,6 @@
-import numbers
 import nextcord
-import linecache as lc
 
-from nextcord.ext import tasks, commands
+from nextcord.ext import commands
 
 intents = nextcord.Intents.all()
 intents.members = True
