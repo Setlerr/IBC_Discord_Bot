@@ -1,14 +1,12 @@
 import nextcord
 import os
-
+import json
 from nextcord.ext import commands
 
 #import token from file
 from apikeys import TOKEN
 from settings import logs_channel
 intents = nextcord.Intents.all()
-intents.members = True
-intents.messages = True
 
 
 def save_event(**event):

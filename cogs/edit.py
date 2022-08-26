@@ -1,11 +1,10 @@
 import nextcord
-
+import json
+from pathlib import Path
 from nextcord.ext import commands
 
 
 intents = nextcord.Intents.all()
-intents.members = True
-intents.messages = True
 
 class Edit(commands.Cog):
     
@@ -14,17 +13,22 @@ class Edit(commands.Cog):
 #edit event by creator
     @commands.command()
     async def edit(self, ctx, *, word: str): #edit
-        messages = await ctx.channel.history(limit=200).flatten()
-        for event in messages:
-            if "Event" in event.content:
-                await ctx.message.delete()
-                text = event.content
-                check_position = text.find("Created by: ")
-                check_text = text[check_position:]
-                if check_text.find(str(ctx.author.mention)) > -1:
-                    await event.edit(content="Event\n"+ word + "\nCreated by: " + str(ctx.author.mention))
-                else:
-                    await ctx.channel.send("Nie możesz edytować tej wiadomości!",delete_after=5)
+        channel_id = ctx.channel.id
+        raw_data = Path("./data.json").read_text()
+        print(raw_data)
+        Current_games = json.loads(raw_data)
+        print("current_Games")
+        print(Current_games)
+        message_id = Current_games[str(channel_id)]["message_id"]
+        author_id = Current_games[str(channel_id)]["Author"]
+        print(message_id)
+        msg = await ctx.fetch_message(message_id)
+        print(msg)
+        await ctx.message.delete()
+        if author_id==ctx.author.mention:
+            await msg.edit(content=word)
+        else:
+            await ctx.channel.send("Nie możesz edytować tej wiadomości!",delete_after=5)
 
 
 def setup(client):

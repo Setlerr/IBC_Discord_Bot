@@ -1,4 +1,5 @@
 ./cogs.pyc
+./cogs/setting.py
 apikeys.py
 *.pyc
 *~

@@ -1,2 +1,3 @@
 join_leave_channel = 982713233758634004
 logs_channel = 989940887259840562
+activity_channel = 1008094444660203540
