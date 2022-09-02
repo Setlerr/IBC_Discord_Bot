@@ -28,7 +28,7 @@ class Export(commands.Cog):
             List_of_players += str(player) +"\n"
         Message_content = f"**Nazwa kanału:** {Channel_name}\n\n**Autor zapisów/misji:** {Author_name}\n\n{List_of_players}\n\n"
         print(Message_content)
-        channel = ctx.get_channel(1008094444660203540)
+        channel = ctx.guild.get_thread(1008094444660203540)
         await channel.send(Message_content)
         
 

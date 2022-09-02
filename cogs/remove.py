@@ -14,10 +14,12 @@ class Remove(commands.Cog):
 #remove
     @commands.command(name='rm',aliases=['wypis','remove'])
     async def rm(self, ctx,word: str,arg2: nextcord.User = None):
+        await ctx.message.delete()
         print("remove")                   
         channel_id = ctx.channel.id
         raw_data = Path("./data.json").read_text()
         print(raw_data)
+        flag = 0
         Current_games = json.loads(raw_data)
         print("current_Games")
         print(Current_games)
@@ -30,26 +32,40 @@ class Remove(commands.Cog):
         author_id = Current_games[str(channel_id)]["Author"]
         print(message_id)
         user_to_remove = ctx.author.name
-        if arg2 is not None:
-            if ctx.author.mention == author_id:
-                user_to_remove = arg2.name
-            else:
-                await ctx.channel.send("Musisz być właścicielem zapisów, żeby kogoś wpisać!",delete_after=5)
-        if word.find("slot") == -1:               
-            await ctx.channel.send("Musisz nazwać slota z którego chcesz się wypisać np. slot5",delete_after=5)
-        elif check_slot.find(word+" ")>-1:
-            await ctx.channel.send("Taki slot już istnieje",delete_after=5)
-        elif word.find("slot")>-1:
-            if word.find(" ")>-1:
-                await ctx.channel.send("Bez spacji!",delete_after=5)
-            else:
-                text = msg.content
-                text = text.replace("**"+str(user_to_remove)+"**",word,1)
-                await msg.edit(content=text)
-                Current_games[str(channel_id)]["Players"].remove(str(user_to_remove))
-                with open('data.json', 'w') as f:
-                    json.dump(Current_games, f)
-        await ctx.message.delete()
+        while True:
+            role = nextcord.utils.find(lambda r: r.name == 'Admin' or r.name == 'Technik', ctx.message.guild.roles)
+            if role in ctx.author.roles:
+                if arg2 is not None:
+                    if ctx.author.mention == author_id:
+                        user_to_remove = arg2.name
+            if arg2 is not None:
+                if ctx.author.mention == author_id:
+                    user_to_remove = arg2.name
+                else:
+                    await ctx.channel.send("Musisz być właścicielem zapisów, żeby kogoś wpisać!",delete_after=5)
+                    flag = 1
+                    break
+            if word.find("slot") == -1:               
+                await ctx.channel.send("Musisz nazwać slota z którego chcesz się wypisać np. slot5",delete_after=5)
+                flag = 1
+                break
+            elif check_slot.find(word+" ")>-1:
+                await ctx.channel.send("Taki slot już istnieje",delete_after=5)
+                flag = 1
+                break
+            elif word.find("slot")>-1:
+                if word.find(" ")>-1:
+                    await ctx.channel.send("Bez spacji!",delete_after=5)
+                    flag = 1
+                    break
+                else:
+                    text = msg.content
+                    text = text.replace("**"+str(user_to_remove)+"**",word,1)
+                    await msg.edit(content=text)
+                    Current_games[str(channel_id)]["Players"].remove(str(user_to_remove))
+                    with open('data.json', 'w') as f:
+                        json.dump(Current_games, f)
+        
 
 
 def setup(client):

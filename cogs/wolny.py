@@ -19,5 +19,9 @@ class Wolny(commands.Cog):
         role2 = ctx.guild.get_role(944364213692944404)
         await user.add_roles(role1)
         await user.add_roles(role2)
+        Message_content = f"{user.name} dostał Wolnego strzelca"
+        print(Message_content)
+        channel = self.client.get_channel(972904672681685002)
+        await channel.send(Message_content)
 def setup(client):
     client.add_cog(Wolny(client))

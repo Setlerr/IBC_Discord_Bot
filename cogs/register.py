@@ -20,6 +20,7 @@ class Register(commands.Cog):
             await ctx.channel.send("Nie ma takiej roli",delete_after=5)
         elif arg1.find("slot") > -1:
             if has_numbers(arg1)==True:
+                flag = 0
                 await ctx.message.delete()
                 channel_id = ctx.channel.id
                 raw_data = Path("./data.json").read_text()
@@ -31,23 +32,27 @@ class Register(commands.Cog):
                 print(message_id)
                 msg = await ctx.fetch_message(message_id)
                 mess = msg.content
-                author_id = Current_games[str(channel_id)]["Author"]
-                print(message_id)
-                user_to_register = ctx.author.name
-                if arg2 is not None:
-                    if ctx.author.mention == author_id:
-                        user_to_register = arg2.name
-                    else:
-                        await ctx.channel.send("Musisz być właścicielem zapisów, żeby kogoś wpisać!",delete_after=5)
-                if mess.find(str(user_to_register))>-1:
-                    await ctx.channel.send("Już jesteś zapisany!",delete_after=5)
+                if mess.find(arg1) == -1:
+                    await ctx.channel.send("Nie ma takiej roli",delete_after=5)
+                    flag = 1
                 else:
-                    mess = mess.replace(arg1,("**"+str(user_to_register)+"**"),1)
-                    await msg.edit(content=mess)
-                    Current_games[str(channel_id)]["Players"].append(str(user_to_register))
-                    with open('data.json', 'w') as f:
-                        json.dump(Current_games, f)
-
+                    author_id = Current_games[str(channel_id)]["Author"]
+                    print(message_id)
+                    user_to_register = ctx.author.name
+                    if arg2 is not None:
+                        if ctx.author.mention == author_id:
+                            user_to_register = arg2.name
+                        else:
+                            await ctx.channel.send("Musisz być właścicielem zapisów, żeby kogoś wpisać!",delete_after=5)
+                    if mess.find(str(user_to_register))>-1:
+                        await ctx.channel.send("Już jesteś zapisany!",delete_after=5)
+                        flag = 1
+                    if flag==0:
+                        mess = mess.replace(arg1,("**"+str(user_to_register)+"**"),1)
+                        await msg.edit(content=mess)
+                        Current_games[str(channel_id)]["Players"].append(str(user_to_register))
+                        with open('data.json', 'w') as f:
+                            json.dump(Current_games, f)
             else:
                 await ctx.message.delete()
                 await ctx.channel.send("Podaj numer slota",delete_after=5)
