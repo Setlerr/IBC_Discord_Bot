@@ -33,16 +33,18 @@ class Remove(commands.Cog):
         print(message_id)
         user_to_remove = ctx.author.name
         while True:
-            role = nextcord.utils.find(lambda r: r.name == 'Admin' or r.name == 'Technik', ctx.message.guild.roles)
-            if role in ctx.author.roles:
-                if arg2 is not None:
-                    if ctx.author.mention == author_id:
-                        user_to_remove = arg2.name
             if arg2 is not None:
-                if ctx.author.mention == author_id:
+                role1 = nextcord.utils.get(ctx.guild.roles, name="Admin")
+                role2 = nextcord.utils.get(ctx.guild.roles, name="Technik")
+                role3 = nextcord.utils.get(ctx.guild.roles, name="Moderator")
+                roles_check = [role1,role2,role3] 
+                for role in roles_check:
+                    if role in ctx.author.roles:
+                        has_permission = 1
+                if ctx.author.mention == author_id or has_permission == 1:
                     user_to_remove = arg2.name
                 else:
-                    await ctx.channel.send("Musisz być właścicielem zapisów, żeby kogoś wpisać!",delete_after=5)
+                    await ctx.channel.send("Musisz być właścicielem zapisów, żeby kogoś wypisać!",delete_after=5)
                     flag = 1
                     break
             if word.find("slot") == -1:               

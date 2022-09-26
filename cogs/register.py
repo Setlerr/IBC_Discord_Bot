@@ -7,6 +7,7 @@ intents = nextcord.Intents.all()
 
 def has_numbers(inputString):
     return any(char.isdigit() for char in inputString)
+
 class Register(commands.Cog):
     
     def __init__(self,client):
@@ -32,6 +33,7 @@ class Register(commands.Cog):
                 print(message_id)
                 msg = await ctx.fetch_message(message_id)
                 mess = msg.content
+
                 if mess.find(arg1) == -1:
                     await ctx.channel.send("Nie ma takiej roli",delete_after=5)
                     flag = 1
@@ -39,11 +41,22 @@ class Register(commands.Cog):
                     author_id = Current_games[str(channel_id)]["Author"]
                     print(message_id)
                     user_to_register = ctx.author.name
+                    #register someone as a Author/Admin/Technic/Moderator
                     if arg2 is not None:
-                        if ctx.author.mention == author_id:
+                        role1 = nextcord.utils.get(ctx.guild.roles, name="Admin")
+                        role2 = nextcord.utils.get(ctx.guild.roles, name="Technik")
+                        role3 = nextcord.utils.get(ctx.guild.roles, name="Moderator")
+                        roles_check = [role1,role2,role3]
+
+                        for role in roles_check:
+                            if role in ctx.author.roles:
+                                has_permission = 1
+                        if ctx.author.mention == author_id or has_permission == 1:
                             user_to_register = arg2.name
                         else:
                             await ctx.channel.send("Musisz być właścicielem zapisów, żeby kogoś wpisać!",delete_after=5)
+                            flag=1
+                    #end of ^        
                     if mess.find(str(user_to_register))>-1:
                         await ctx.channel.send("Już jesteś zapisany!",delete_after=5)
                         flag = 1
