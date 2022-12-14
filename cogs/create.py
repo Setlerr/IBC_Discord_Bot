@@ -1,5 +1,3 @@
-from http import server
-from venv import create
 import json
 import nextcord
 import os.path

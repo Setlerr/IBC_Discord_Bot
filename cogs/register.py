@@ -61,7 +61,7 @@ class Register(commands.Cog):
                         await ctx.channel.send("Już jesteś zapisany!",delete_after=5)
                         flag = 1
                     if flag==0:
-                        mess = mess.replace(arg1,("**"+str(user_to_register)+"**"),1)
+                        mess = mess.replace((arg1+" "),("**"+str(user_to_register)+"** "),1)
                         await msg.edit(content=mess)
                         Current_games[str(channel_id)]["Players"].append(str(user_to_register))
                         with open('data.json', 'w') as f:

@@ -3,8 +3,6 @@ import nextcord
 from nextcord.ext import commands
 
 intents = nextcord.Intents.all()
-intents.members = True
-intents.messages = True
 
 class Ping(commands.Cog):
     

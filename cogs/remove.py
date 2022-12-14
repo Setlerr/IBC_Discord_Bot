@@ -4,8 +4,7 @@ import json
 from nextcord.ext import commands
 from pathlib import Path
 intents = nextcord.Intents.all()
-intents.members = True
-intents.messages = True
+
 
 class Remove(commands.Cog):
     
@@ -38,6 +37,7 @@ class Remove(commands.Cog):
                 role2 = nextcord.utils.get(ctx.guild.roles, name="Technik")
                 role3 = nextcord.utils.get(ctx.guild.roles, name="Moderator")
                 roles_check = [role1,role2,role3] 
+
                 for role in roles_check:
                     if role in ctx.author.roles:
                         has_permission = 1
@@ -47,6 +47,7 @@ class Remove(commands.Cog):
                     await ctx.channel.send("Musisz być właścicielem zapisów, żeby kogoś wypisać!",delete_after=5)
                     flag = 1
                     break
+                
             if word.find("slot") == -1:               
                 await ctx.channel.send("Musisz nazwać slota z którego chcesz się wypisać np. slot5",delete_after=5)
                 flag = 1
