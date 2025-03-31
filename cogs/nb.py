@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import nextcord
 
 from nextcord.ext import commands
@@ -11,8 +12,9 @@ class NB(commands.Cog):
 #Ping someone x times
     @commands.command(name='nb',aliases=['urlop'])
     async def nb(self, ctx, *, word: str): #edit
+        await ctx.send(ctx.author.name +" "+ word)
         channel = ctx.guild.get_thread(1008094444660203540)
-        await channel.send(word)
+        await channel.send(ctx.author.name +" "+ word)
         await channel.send("<@322821699278077952> Kolejny urlop!")
         await ctx.message.delete()
 def setup(client):

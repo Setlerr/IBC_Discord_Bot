@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from nextcord.ext import commands
 
 class Template(commands.Cog):
